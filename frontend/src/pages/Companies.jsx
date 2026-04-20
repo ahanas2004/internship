@@ -36,10 +36,10 @@ const Companies = () => {
         <Button variant="contained" onClick={() => setOpen(true)}>Add Company</Button>
       </Box>
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 3, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
         <Table>
           <TableHead>
-            <TableRow sx={{ backgroundColor: '#f0f0f0' }}>
+            <TableRow sx={{ backgroundColor: 'background.default' }}>
               <TableCell><strong>Company Name</strong></TableCell>
               <TableCell><strong>Industry</strong></TableCell>
               <TableCell><strong>Location</strong></TableCell>
@@ -48,10 +48,10 @@ const Companies = () => {
           </TableHead>
           <TableBody>
             {companies.map(company => (
-              <TableRow key={company._id}>
-                <TableCell>{company.name}</TableCell>
-                <TableCell>{company.industry}</TableCell>
-                <TableCell>{company.location}</TableCell>
+              <TableRow key={company._id} hover sx={{ transition: '0.2s' }}>
+                <TableCell sx={{ fontWeight: 500 }}>{company.name}</TableCell>
+                <TableCell sx={{ color: 'text.secondary' }}>{company.industry}</TableCell>
+                <TableCell sx={{ color: 'text.secondary' }}>{company.location}</TableCell>
                 <TableCell>
                   <Button component={Link} to={`/companies/${company._id}`} size="small" variant="outlined">
                     View

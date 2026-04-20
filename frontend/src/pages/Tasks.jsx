@@ -7,6 +7,7 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [leads, setLeads] = useState([]);
   const [open, setOpen] = useState(false);
+  const [users, setUsers] = useState([]);
   const { user } = useContext(AuthContext);
   
   const [formData, setFormData] = useState({ title: '', lead: '', assignedTo: user?._id || '', dueDate: '' });
@@ -22,9 +23,15 @@ const Tasks = () => {
     setLeads(data.leads);
   };
 
+  const fetchUsers = async () => {
+    const { data } = await api.get('/users');
+    setUsers(data);
+  };
+
   useEffect(() => {
     fetchTasks();
     fetchLeads();
+    fetchUsers();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -55,10 +62,10 @@ const Tasks = () => {
         <Button variant="contained" onClick={() => setOpen(true)}>Add Task</Button>
       </Box>
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 3, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}>
         <Table>
           <TableHead>
-            <TableRow sx={{ backgroundColor: '#f0f0f0' }}>
+            <TableRow sx={{ backgroundColor: 'background.default' }}>
               <TableCell><strong>Title</strong></TableCell>
               <TableCell><strong>Lead</strong></TableCell>
               <TableCell><strong>Due Date</strong></TableCell>
@@ -68,12 +75,12 @@ const Tasks = () => {
           </TableHead>
           <TableBody>
             {tasks.map(task => (
-              <TableRow key={task._id}>
-                <TableCell>{task.title}</TableCell>
-                <TableCell>{task.lead?.name}</TableCell>
-                <TableCell>{new Date(task.dueDate).toLocaleDateString()}</TableCell>
+              <TableRow key={task._id} hover sx={{ transition: '0.2s' }}>
+                <TableCell sx={{ fontWeight: 500 }}>{task.title}</TableCell>
+                <TableCell sx={{ color: 'text.secondary' }}>{task.lead?.name}</TableCell>
+                <TableCell sx={{ color: 'text.secondary' }}>{new Date(task.dueDate).toLocaleDateString()}</TableCell>
                 <TableCell>
-                  <Chip label={task.status} color={task.status === 'Done' ? 'success' : 'warning'} size="small" />
+                  <Chip label={task.status} color={task.status === 'Done' ? 'success' : 'warning'} size="small" sx={{ fontWeight: 'bold' }} />
                 </TableCell>
                 <TableCell>
                   {task.status === 'Pending' && task.assignedTo?._id === user?._id && (
@@ -101,6 +108,13 @@ const Tasks = () => {
               <InputLabel>Lead</InputLabel>
               <Select value={formData.lead} onChange={(e) => setFormData({...formData, lead: e.target.value})} label="Lead" required>
                 {leads.map(l => <MenuItem key={l._id} value={l._id}>{l.name}</MenuItem>)}
+              </Select>
+            </FormControl>
+
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Assign To</InputLabel>
+              <Select value={formData.assignedTo} onChange={(e) => setFormData({...formData, assignedTo: e.target.value})} label="Assign To" required>
+                {users.map(u => <MenuItem key={u._id} value={u._id}>{u.name}</MenuItem>)}
               </Select>
             </FormControl>
 

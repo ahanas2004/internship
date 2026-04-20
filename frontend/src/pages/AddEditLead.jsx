@@ -16,8 +16,9 @@ const AddEditLead = () => {
   const [users, setUsers] = useState([]); // Assuming backend doesn't have an endpoint for this, we could mock or I will seed
 
   useEffect(() => {
-    // Fetch companies
+    // Fetch companies and users
     api.get('/companies').then(res => setCompanies(res.data)).catch(console.error);
+    api.get('/users').then(res => setUsers(res.data)).catch(console.error);
     
     if (isEdit) {
       api.get(`/leads/${id}`).then(res => {
@@ -74,6 +75,12 @@ const AddEditLead = () => {
                 <MenuItem value="New">New</MenuItem>
                 <MenuItem value="Contacted">Contacted</MenuItem>
                 <MenuItem value="Lost">Lost</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField select fullWidth label="Assigned To" name="assignedTo" value={formData.assignedTo} onChange={handleChange}>
+                <MenuItem value=""><em>Unassigned</em></MenuItem>
+                {users.map(u => <MenuItem key={u._id} value={u._id}>{u.name} ({u.email})</MenuItem>)}
               </TextField>
             </Grid>
             <Grid item xs={12} sm={6}>

@@ -3,6 +3,7 @@ import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText, Typography, Ap
 import { Dashboard as DashboardIcon, People, Business, Assignment, Menu } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const drawerWidth = 240;
 
@@ -45,11 +46,41 @@ const Layout = ({ children }) => {
               setMobileOpen(false);
             }}
             selected={location.pathname === item.path}
+            sx={{
+              mx: 1,
+              borderRadius: 2,
+              mb: 0.5,
+              ...(location.pathname === item.path && {
+                backgroundColor: 'primary.main',
+                color: '#fff',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                   content: '""',
+                   position: 'absolute',
+                   top: 0, left: 0, width: '100%', height: '100%',
+                   background: 'linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0))',
+                },
+                '&:hover': {
+                  backgroundColor: 'primary.dark',
+                }
+              }),
+              ...!(location.pathname === item.path) && {
+                '&:hover': {
+                  backgroundColor: 'rgba(0,0,0,0.04)',
+                }
+              }
+            }}
           >
-            <ListItemIcon sx={{ color: location.pathname === item.path ? 'primary.main' : 'inherit' }}>
+            <ListItemIcon sx={{ color: location.pathname === item.path ? 'inherit' : 'text.secondary' }}>
               {item.icon}
             </ListItemIcon>
-            <ListItemText primary={item.text} sx={{ color: location.pathname === item.path ? 'primary.main' : 'inherit' }} />
+            <ListItemText 
+              primary={item.text} 
+              primaryTypographyProps={{ 
+                fontWeight: location.pathname === item.path ? 700 : 500 
+              }} 
+            />
           </ListItem>
         ))}
       </List>
@@ -59,7 +90,14 @@ const Layout = ({ children }) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" sx={{ width: { sm: `calc(100% - ${drawerWidth}px)` }, ml: { sm: `${drawerWidth}px` }, backgroundColor: '#fff', color: '#000' }}>
+      <AppBar position="fixed" elevation={0} sx={{ 
+        width: { sm: `calc(100% - ${drawerWidth}px)` }, 
+        ml: { sm: `${drawerWidth}px` }, 
+        backgroundColor: 'rgba(255, 255, 255, 0.75)', 
+        backdropFilter: 'blur(16px)',
+        color: 'text.primary',
+        borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+      }}>
         <Toolbar>
           <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={handleDrawerToggle} sx={{ mr: 2, display: { sm: 'none' } }}>
             <Menu />
@@ -91,9 +129,19 @@ const Layout = ({ children }) => {
           {drawer}
         </Drawer>
       </Box>
-      <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` }, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` }, minHeight: '100vh' }}>
         <Toolbar />
-        {children}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.98 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
       </Box>
     </Box>
   );

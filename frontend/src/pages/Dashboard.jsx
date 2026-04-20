@@ -2,21 +2,73 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Paper, Typography, Box, CircularProgress } from '@mui/material';
 import { Group, AccessTime, CheckCircle, Moving } from '@mui/icons-material';
 import api from '../api/api';
+import { motion } from 'framer-motion';
 
-const StatCard = ({ title, value, icon, color }) => (
-  <Paper sx={{ p: 3, display: 'flex', alignItems: 'center', borderRadius: 2, boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-    <Box sx={{ backgroundColor: `${color}15`, p: 2, borderRadius: '50%', mr: 2, color: color }}>
-      {icon}
-    </Box>
-    <Box>
-      <Typography variant="body2" color="text.secondary" fontWeight="bold">
-        {title}
-      </Typography>
-      <Typography variant="h4" fontWeight="bold">
-        {value}
-      </Typography>
-    </Box>
-  </Paper>
+const StatCard = ({ title, value, icon, color, delay }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 50 }}
+    animate={{ 
+      opacity: 1, 
+      y: [0, -10, 0],
+    }}
+    transition={{ 
+      opacity: { duration: 0.8 },
+      y: {
+        duration: 4,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay: delay
+      }
+    }}
+    whileHover={{ 
+      scale: 1.05, 
+      y: -15, 
+      rotateX: 10,
+      rotateY: -10,
+      transition: { type: "spring", stiffness: 300, damping: 10 }
+    }}
+    style={{ perspective: 1000 }}
+  >
+    <Paper sx={{ 
+      p: 3, 
+      display: 'flex', 
+      alignItems: 'center', 
+      borderRadius: 4, 
+      overflow: 'visible',
+      position: 'relative'
+    }}>
+      {/* Soft Glow Effect */}
+      <Box sx={{
+        position: 'absolute',
+        top: '50%', left: '50%',
+        width: '100%', height: '100%',
+        transform: 'translate(-50%, -50%)',
+        background: `radial-gradient(circle, ${color}10 0%, transparent 70%)`,
+        filter: 'blur(20px)',
+        zIndex: -1
+      }} />
+
+      <Box sx={{ 
+        background: `linear-gradient(135deg, ${color}15 0%, transparent 100%)`, 
+        p: 2.5, 
+        borderRadius: '50%', 
+        mr: 3, 
+        color: color, 
+        display: 'flex',
+        border: `1px solid ${color}30`,
+      }}>
+        {icon}
+      </Box>
+      <Box>
+        <Typography variant="body1" color="text.secondary" fontWeight="600" gutterBottom>
+          {title}
+        </Typography>
+        <Typography variant="h3" fontWeight="800" sx={{ color: 'text.primary' }}>
+          {value}
+        </Typography>
+      </Box>
+    </Paper>
+  </motion.div>
 );
 
 const Dashboard = () => {
@@ -47,16 +99,16 @@ const Dashboard = () => {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} md={3}>
-          <StatCard title="Total Leads" value={stats.totalLeads} icon={<Group fontSize="large" />} color="#1976d2" />
+          <StatCard title="Total Leads" value={stats.totalLeads} icon={<Group fontSize="large" />} color="#00F0FF" delay={0} />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <StatCard title="Qualified Leads" value={stats.qualifiedLeads} icon={<Moving fontSize="large" />} color="#2e7d32" />
+          <StatCard title="Qualified Leads" value={stats.qualifiedLeads} icon={<Moving fontSize="large" />} color="#80F8FF" delay={0.2} />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <StatCard title="Tasks Due Today" value={stats.tasksDueToday} icon={<AccessTime fontSize="large" />} color="#ed6c02" />
+          <StatCard title="Tasks Due Today" value={stats.tasksDueToday} icon={<AccessTime fontSize="large" />} color="#FF0055" delay={0.4} />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <StatCard title="Completed Tasks" value={stats.completedTasks} icon={<CheckCircle fontSize="large" />} color="#9c27b0" />
+          <StatCard title="Completed Tasks" value={stats.completedTasks} icon={<CheckCircle fontSize="large" />} color="#FF80AB" delay={0.6} />
         </Grid>
       </Grid>
     </Box>

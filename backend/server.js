@@ -4,6 +4,13 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 
 // Connect Database
+if (!process.env.MONGODB_URI) {
+  console.error('CRITICAL ERROR: MONGODB_URI is not defined in environment variables!');
+}
+if (!process.env.JWT_SECRET) {
+  console.error('CRITICAL ERROR: JWT_SECRET is not defined in environment variables!');
+}
+
 connectDB();
 
 const app = express();

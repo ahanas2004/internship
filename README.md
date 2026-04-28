@@ -28,7 +28,7 @@ Since this is a fresh setup with no users registered, you will need to populate 
 npm run seed
 ```
 
-Start the backend server (runs on `http://localhost:5000`):
+Start the backend server (runs on `https://internship-anas.netlify.app`):
 ```bash
 npm run dev
 ```
